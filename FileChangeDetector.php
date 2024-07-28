@@ -9,88 +9,44 @@ namespace Typhoon\ChangeDetector;
  */
 final class FileChangeDetector implements ChangeDetector
 {
+    public const HASHING_ALGORITHM = 'xxh3';
+
     /**
      * @param non-empty-string $file
-     * @param false|non-empty-string $md5
+     * @param false|non-empty-string $xxh3
      */
     public function __construct(
         private readonly string $file,
         private readonly false|int $mtime,
-        private readonly false|string $md5,
-    ) {}
-
-    /**
-     * @param non-empty-string $path
-     */
-    public static function fromPath(string $path): self
-    {
-        $handle = @fopen($path, 'r');
-
-        if ($handle === false) {
-            return new self($path, false, false);
-        }
-
-        try {
-            if (!@flock($handle, LOCK_SH)) {
-                throw new \RuntimeException('Failed to acquire a shared lock on ' . $path);
-            }
-
-            $mtime = @filemtime($path);
-
-            if ($mtime === false) {
-                return new self($path, false, false);
-            }
-
-            $md5 = @md5_file($path);
-
-            if ($md5 === false) {
-                return new self($path, false, false);
-            }
-
-            return new self($path, $mtime, $md5);
-        } finally {
-            @fclose($handle);
-        }
+        private readonly false|string $xxh3,
+    ) {
+        \assert(($mtime === false && $xxh3 === false) xor ($mtime !== false && $xxh3 !== false));
     }
 
     /**
-     * @param non-empty-string $path
+     * @param non-empty-string $file
      */
-    public static function fromPathEnsureExists(string $path): self
+    public static function fromFile(string $file): self
     {
-        $handle = @fopen($path, 'r');
+        $mtime = @filemtime($file);
 
-        if ($handle === false) {
-            throw new FileIsNotReadable($path);
+        if ($mtime === false) {
+            throw new FileIsNotReadable($file);
         }
 
-        try {
-            if (!@flock($handle, LOCK_SH)) {
-                throw new \RuntimeException('Failed to acquire a shared lock on ' . $path);
-            }
+        $xxh3 = @hash_file(self::HASHING_ALGORITHM, $file);
 
-            $mtime = @filemtime($path);
-
-            if ($mtime === false) {
-                throw new FileIsNotReadable($path);
-            }
-
-            $md5 = @md5_file($path);
-
-            if ($md5 === false) {
-                throw new FileIsNotReadable($path);
-            }
-
-            return new self($path, $mtime, $md5);
-        } finally {
-            @fclose($handle);
+        if ($xxh3 === false) {
+            throw new FileIsNotReadable($file);
         }
+
+        return new self($file, $mtime, $xxh3);
     }
 
     public function changed(): bool
     {
         return @filemtime($this->file) !== $this->mtime
-            || @md5_file($this->file) !== $this->md5;
+            && @hash_file(self::HASHING_ALGORITHM, $this->file) !== $this->xxh3;
     }
 
     public function deduplicate(): array
