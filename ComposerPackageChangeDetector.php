@@ -15,7 +15,7 @@ final class ComposerPackageChangeDetector implements ChangeDetector
      * @param non-empty-string $name
      * @param ?non-empty-string $reference
      */
-    private function __construct(
+    public function __construct(
         private readonly string $name,
         private readonly ?string $reference,
     ) {}
@@ -24,15 +24,6 @@ final class ComposerPackageChangeDetector implements ChangeDetector
      * @param non-empty-string $name
      */
     public static function fromName(string $name): self
-    {
-        return new self($name, self::getReference($name));
-    }
-
-    /**
-     * @param non-empty-string $name
-     * @throws PackageIsNotInstalled
-     */
-    public static function fromNameEnsureInstalled(string $name): self
     {
         return new self($name, self::getReference($name) ?? throw new PackageIsNotInstalled($name));
     }
