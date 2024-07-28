@@ -58,14 +58,6 @@ final class ComposerPackageChangeDetector implements ChangeDetector
 
     public function deduplicate(): array
     {
-        return [$this->hash() => $this];
-    }
-
-    /**
-     * @return non-empty-string
-     */
-    private function hash(): string
-    {
-        return \sprintf('%s:%s:composer-package', (string) $this->reference, $this->name);
+        return [self::class . json_encode(get_object_vars($this)) => $this];
     }
 }
