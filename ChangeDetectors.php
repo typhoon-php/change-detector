@@ -10,10 +10,10 @@ namespace Typhoon\ChangeDetector;
 final class ChangeDetectors implements ChangeDetector
 {
     /**
-     * @param non-empty-array<non-empty-string, ChangeDetector> $deduplicated
+     * @param non-empty-list<ChangeDetector> $changeDetectors
      */
     private function __construct(
-        private readonly array $deduplicated,
+        private readonly array $changeDetectors,
     ) {}
 
     /**
@@ -33,12 +33,12 @@ final class ChangeDetectors implements ChangeDetector
             }
         }
 
-        return new self($deduplicated);
+        return new self(array_values($deduplicated));
     }
 
     public function changed(): bool
     {
-        foreach ($this->deduplicated as $changeDetector) {
+        foreach ($this->changeDetectors as $changeDetector) {
             if ($changeDetector->changed()) {
                 return true;
             }
@@ -49,6 +49,9 @@ final class ChangeDetectors implements ChangeDetector
 
     public function deduplicate(): array
     {
-        return $this->deduplicated;
+        return array_merge(...array_map(
+            static fn(ChangeDetector $changeDetector): array => $changeDetector->deduplicate(),
+            $this->changeDetectors,
+        ));
     }
 }
