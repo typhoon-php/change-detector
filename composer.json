@@ -3,6 +3,11 @@
     "description": "Can detect file and package version changes",
     "license": "MIT",
     "type": "library",
+    "keywords": [
+        "php",
+        "cache",
+        "invalidation"
+    ],
     "authors": [
         {
             "name": "Valentin Udaltsov",
