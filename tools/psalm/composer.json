@@ -5,6 +5,10 @@
         "vimeo/psalm": "^5.25.0",
         "typhoon/check-visibility-psalm-plugin": "^0.1.0"
     },
+    "replace": {
+        "amphp/amp": "*",
+        "amphp/byte-stream": "*"
+    },
     "conflict": {
         "netresearch/jsonmapper": "<4"
     },
