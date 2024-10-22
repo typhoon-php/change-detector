@@ -17,10 +17,14 @@ final class ChangeDetectors implements ChangeDetector
     ) {}
 
     /**
-     * @param non-empty-array<ChangeDetector> $changeDetectors
+     * @param array<ChangeDetector> $changeDetectors
      */
-    public static function from(array $changeDetectors): ChangeDetector
+    public static function from(array $changeDetectors, ChangeDetector $default = new InMemoryChangeDetector()): ChangeDetector
     {
+        if (\count($changeDetectors) === 0) {
+            return $default;
+        }
+
         if (\count($changeDetectors) === 1) {
             return reset($changeDetectors);
         }
