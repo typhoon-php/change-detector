@@ -101,8 +101,8 @@ final class FileChangeDetectorTest extends TestCase
         new FileChangeDetector('a', $mtime, $xxh3);
     }
 
-    #[TestWith([new FileChangeDetector('a.txt', 123, 'xxh3'), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.123.xxh3'])]
-    #[TestWith([new FileChangeDetector('a.txt', false, false), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.false.false'])]
+    #[TestWith([new FileChangeDetector('a.txt', 123, 'xxh3'), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.xxh3'])]
+    #[TestWith([new FileChangeDetector('a.txt', false, false), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.false'])]
     public function testDeduplicateResult(FileChangeDetector $detector, string $expectedHash): void
     {
         $deduplicate = $detector->deduplicate();
