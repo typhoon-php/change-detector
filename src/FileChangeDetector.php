@@ -43,6 +43,30 @@ final class FileChangeDetector implements ChangeDetector
         return new self($file, $mtime, $xxh3);
     }
 
+    /**
+     * @param non-empty-string $file
+     * @return array{self, string}
+     */
+    public static function detectorAndContentsFromFile(string $file): array
+    {
+        $mtime = @filemtime($file);
+
+        if ($mtime === false) {
+            throw new FileIsNotReadable($file);
+        }
+
+        $contents = @file_get_contents($file);
+
+        if ($contents === false) {
+            throw new FileIsNotReadable($file);
+        }
+
+        return [
+            new self($file, $mtime, hash(self::HASHING_ALGORITHM, $contents)),
+            $contents,
+        ];
+    }
+
     public function changed(): bool
     {
         $mtime = @filemtime($this->file);
