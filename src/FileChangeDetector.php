@@ -17,7 +17,7 @@ final class FileChangeDetector implements ChangeDetector
      */
     public function __construct(
         private readonly string $file,
-        private readonly false|int $mtime,
+        private false|int $mtime,
         private readonly false|string $xxh3,
     ) {
         \assert(($mtime === false && $xxh3 === false) xor ($mtime !== false && $xxh3 !== false));
@@ -45,8 +45,19 @@ final class FileChangeDetector implements ChangeDetector
 
     public function changed(): bool
     {
-        return @filemtime($this->file) !== $this->mtime
-            && @hash_file(self::HASHING_ALGORITHM, $this->file) !== $this->xxh3;
+        $mtime = @filemtime($this->file);
+
+        if ($mtime === $this->mtime) {
+            return false;
+        }
+
+        if (@hash_file(self::HASHING_ALGORITHM, $this->file) === $this->xxh3) {
+            $this->mtime = $mtime;
+
+            return false;
+        }
+
+        return true;
     }
 
     public function deduplicate(): array
