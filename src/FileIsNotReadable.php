@@ -9,11 +9,8 @@ namespace Typhoon\ChangeDetector;
  */
 final class FileIsNotReadable extends \RuntimeException
 {
-    /**
-     * @param non-empty-string $path
-     */
-    public function __construct(string $path, ?\Throwable $previous = null)
+    public function __construct(string $file, ?\Throwable $previous = null)
     {
-        parent::__construct(\sprintf('File "%s" does not exist or is not readable', $path), previous: $previous);
+        parent::__construct(\sprintf('File "%s" does not exist or is not readable', $file), previous: $previous);
     }
 }

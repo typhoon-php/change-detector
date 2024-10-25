@@ -12,7 +12,6 @@ final class FileChangeDetector implements ChangeDetector
     public const HASHING_ALGORITHM = 'xxh3';
 
     /**
-     * @param non-empty-string $file
      * @param false|non-empty-string $xxh3
      */
     public function __construct(
@@ -23,9 +22,6 @@ final class FileChangeDetector implements ChangeDetector
         \assert(($mtime === false && $xxh3 === false) xor ($mtime !== false && $xxh3 !== false));
     }
 
-    /**
-     * @param non-empty-string $file
-     */
     public static function fromFile(string $file): self
     {
         $mtime = @filemtime($file);
@@ -44,7 +40,6 @@ final class FileChangeDetector implements ChangeDetector
     }
 
     /**
-     * @param non-empty-string $file
      * @return array{self, string}
      */
     public static function detectorAndContentsFromFile(string $file): array
