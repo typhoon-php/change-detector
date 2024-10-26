@@ -79,9 +79,9 @@ final class FileChangeDetectorTest extends TestCase
     public function testItReturnsDeduplicatedDetectors(): void
     {
         $detector = ChangeDetectors::from([
-            new FileChangeDetector('test1', 1, 'a'),
-            new FileChangeDetector('test2', 2, 'b'),
-            new FileChangeDetector('test1', 3, 'c'),
+            new FileChangeDetector('test1', 'a', 1),
+            new FileChangeDetector('test2', 'b', 2),
+            new FileChangeDetector('test1', 'c', 3),
         ]);
 
         $deduplicated = $detector->deduplicate();
@@ -89,19 +89,7 @@ final class FileChangeDetectorTest extends TestCase
         self::assertCount(3, $deduplicated);
     }
 
-    /**
-     * @param false|non-empty-string $xxh3
-     */
-    #[TestWith([false, 'awdawd'])]
-    #[TestWith([123, false])]
-    public function testCannotCreateWithInvalidMtimeXxh3Combinations(false|int $mtime, false|string $xxh3): void
-    {
-        $this->expectException(\AssertionError::class);
-
-        new FileChangeDetector('a', $mtime, $xxh3);
-    }
-
-    #[TestWith([new FileChangeDetector('a.txt', 123, 'xxh3'), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.xxh3'])]
+    #[TestWith([new FileChangeDetector('a.txt', 'xxh3', 123), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.xxh3'])]
     #[TestWith([new FileChangeDetector('a.txt', false, false), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.false'])]
     public function testDeduplicateResult(FileChangeDetector $detector, string $expectedHash): void
     {
