@@ -78,7 +78,7 @@ final class PhpExtensionVersionChangeDetectorTest extends TestCase
     }
 
     #[TestWith([new PhpExtensionVersionChangeDetector('abc', '123'), 'Typhoon\ChangeDetector\PhpExtensionVersionChangeDetector.abc.123'])]
-    #[TestWith([new PhpExtensionVersionChangeDetector('abc', false), 'Typhoon\ChangeDetector\PhpExtensionVersionChangeDetector.abc.false'])]
+    #[TestWith([new PhpExtensionVersionChangeDetector('abc', false), 'Typhoon\ChangeDetector\PhpExtensionVersionChangeDetector.abc.'])]
     public function testDeduplicateResult(PhpExtensionVersionChangeDetector $detector, string $expectedHash): void
     {
         $deduplicate = $detector->deduplicate();

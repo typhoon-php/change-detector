@@ -63,13 +63,6 @@ final class FileChangeDetector implements ChangeDetector
 
     public function deduplicate(): array
     {
-        $hash = \sprintf(
-            '%s.%s.%s',
-            self::class,
-            $this->file,
-            $this->xxh3 === false ? 'false' : $this->xxh3,
-        );
-
-        return [$hash => $this];
+        return [\sprintf('%s.%s.%s', self::class, $this->file, (string) $this->xxh3) => $this];
     }
 }

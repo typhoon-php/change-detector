@@ -46,13 +46,6 @@ final class PhpExtensionVersionChangeDetector implements ChangeDetector
 
     public function deduplicate(): array
     {
-        $hash = \sprintf(
-            '%s.%s.%s',
-            self::class,
-            $this->name,
-            $this->version === false ? 'false' : $this->version,
-        );
-
-        return [$hash => $this];
+        return [\sprintf('%s.%s.%s', self::class, $this->name, (string) $this->version) => $this];
     }
 }
