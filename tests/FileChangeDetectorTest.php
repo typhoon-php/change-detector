@@ -79,9 +79,9 @@ final class FileChangeDetectorTest extends TestCase
     public function testItReturnsDeduplicatedDetectors(): void
     {
         $detector = ChangeDetectors::from([
-            new FileChangeDetector('test1', 'a'),
-            new FileChangeDetector('test2', 'b'),
-            new FileChangeDetector('test1', 'c'),
+            new FileChangeDetector('test1', false, 'a'),
+            new FileChangeDetector('test2', false, 'b'),
+            new FileChangeDetector('test1', false, 'c'),
         ]);
 
         $deduplicated = $detector->deduplicate();
@@ -89,8 +89,8 @@ final class FileChangeDetectorTest extends TestCase
         self::assertCount(3, $deduplicated);
     }
 
-    #[TestWith([new FileChangeDetector('a.txt', 'xxh3'), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.xxh3'])]
-    #[TestWith([new FileChangeDetector('a.txt', false), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.'])]
+    #[TestWith([new FileChangeDetector('a.txt', false, 'xxh3'), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.xxh3'])]
+    #[TestWith([new FileChangeDetector('a.txt', false, false), 'Typhoon\ChangeDetector\FileChangeDetector.a.txt.'])]
     public function testDeduplicateResult(FileChangeDetector $detector, string $expectedHash): void
     {
         $deduplicate = $detector->deduplicate();

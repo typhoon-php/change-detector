@@ -14,11 +14,12 @@ final class FileChangeDetector implements ChangeDetector
     /**
      * @param non-empty-string $file
      * @param false|non-empty-string $xxh3
+     * @todo make $mtime optional with default false
      */
     public function __construct(
         private readonly string $file,
+        private false|int $mtime,
         private readonly false|string $xxh3,
-        private false|int $mtime = false,
     ) {}
 
     /**
@@ -33,7 +34,7 @@ final class FileChangeDetector implements ChangeDetector
             throw new FileIsNotReadable($file);
         }
 
-        return new self($file, $xxh3, $mtime);
+        return new self($file, $mtime, $xxh3);
     }
 
     /**
@@ -41,7 +42,7 @@ final class FileChangeDetector implements ChangeDetector
      */
     public static function fromFileAndContents(string $file, string $contents): self
     {
-        return new self($file, hash(self::HASHING_ALGORITHM, $contents), @filemtime($file));
+        return new self($file, @filemtime($file), hash(self::HASHING_ALGORITHM, $contents));
     }
 
     public function changed(): bool
